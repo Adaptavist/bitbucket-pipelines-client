@@ -20,4 +20,3 @@ jobs:
       - uses: actions-ecosystem/action-push-tag@v1
         with:
           tag: latest
-      - run: GOPROXY=proxy.golang.org go list -m github.com/adaptavist/bitbucket_pipelines_client@latest
