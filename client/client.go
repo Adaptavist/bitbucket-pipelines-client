@@ -25,7 +25,7 @@ func (h Client) PostPipeline(request model.PostPipelineRequest) (pipeline *model
 		return pipeline, err
 	}
 
-	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/", h.Config.GetBaseURL(), workspace, repository)
+	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/", h.Config.GetBaseURL(), *workspace, *repository)
 	err = h.postUnmarshalled(url, request.Pipeline, &pipeline)
 	if err != nil {
 		return pipeline, err
@@ -69,7 +69,7 @@ func (h Client) GetPipeline(request model.GetPipelineRequest) (pipeline *model.P
 		return pipeline, err
 	}
 
-	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/%v", h.Config.GetBaseURL(), workspace, repository, request.Pipeline.UUID)
+	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/%v", h.Config.GetBaseURL(), *workspace, *repository, *request.Pipeline.UUID)
 	err = h.getUnmarshalled(url, &pipeline)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func (h Client) GetPipelineSteps(request model.GetPipelineRequest) (steps model.
 		return steps, err
 	}
 
-	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/%v/steps/", h.Config.GetBaseURL(), workspace, repository, request.Pipeline.UUID)
+	url := fmt.Sprintf("%s/2.0/repositories/%v/%v/pipelines/%v/steps/", h.Config.GetBaseURL(), *workspace, *repository, *request.Pipeline.UUID)
 	var result model.StepsResponse
 	err = h.getUnmarshalled(url, &result)
 	steps = append(steps, result.Values...)

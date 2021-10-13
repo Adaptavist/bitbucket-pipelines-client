@@ -14,3 +14,6 @@ test_local:
 	BITBUCKET_USERNAME=test \
 	BITBUCKET_PASSWORD=test \
 	make up test down
+
+test_integration:
+	go test ./... -v -tags integration
