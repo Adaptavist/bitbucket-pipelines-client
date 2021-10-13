@@ -17,6 +17,3 @@ jobs:
           changelog-file: true
           github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
       - run: GOPROXY=proxy.golang.org go list -m github.com/adaptavist/bitbucket_pipelines_client@v${{ steps.release.outputs.version }}
-      - uses: actions-ecosystem/action-push-tag@v1
-        with:
-          tag: latest
