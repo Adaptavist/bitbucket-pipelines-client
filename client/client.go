@@ -127,7 +127,7 @@ func (h Client) GetTag(request model.GetTagRequest) (response *model.TagResponse
 	if err != nil {
 		return nil, err
 	}
-	url:= fmt.Sprintf("%s/repositories/%s/%s/refs/tags/%s", h.Config.GetBaseURL(), *w, *r, request.Tag)
+	url:= fmt.Sprintf("%s/2.0/repositories/%s/%s/refs/tags/%s", h.Config.GetBaseURL(), *w, *r, request.Tag)
 	err = h.getUnmarshalled(url, &response)
 	return
 }
