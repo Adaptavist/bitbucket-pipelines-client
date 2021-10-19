@@ -24,33 +24,32 @@ func (h *Client) doRequest(r *retry.Request) (*http.Response, error) {
 	return h.getHttpClient().Do(r)
 }
 
-func (h Client) get(url string) (resp []byte, err error) {
-	req, err := retry.NewRequest("GET", url, nil)
+func (h Client) get(url string) ([]byte, error) {
+	req, requestErr := retry.NewRequest("GET", url, nil)
 
-	if err != nil {
-		return
+	if requestErr != nil {
+		return nil, requestErr
 	}
 
-	res, err := h.doRequest(req)
+	res, httpErr := h.doRequest(req)
 
-	if err != nil {
-		return
+	if httpErr != nil {
+		return nil, httpErr
 	}
 
-	err = hasError(res.StatusCode)
+	resp, readErr := ioutil.ReadAll(res.Body)
 
-	if err != nil {
-		err = fmt.Errorf("failed to GET (%s) %s", url, err)
-		return
+	if readErr != nil {
+		return nil, readErr
 	}
 
-	resp, err = ioutil.ReadAll(res.Body)
+	errStatus := hasError(res.StatusCode)
 
-	if err != nil {
-		return
+	if errStatus != nil {
+		return nil, fmt.Errorf("failed to GET (%s) - %s - %s", url, errStatus, resp)
 	}
 
-	return
+	return resp, nil
 }
 
 // hasError returns an error if 40x or 50x codes are given
@@ -62,40 +61,39 @@ func hasError(s int) (err error) {
 }
 
 // post an BasicAuth authenticated resource
-func (h Client) post(url string, data interface{}) (resp []byte, err error) {
-	reqData, err := json.Marshal(data)
+func (h Client) post(url string, data interface{}) ([]byte, error) {
+	reqData, dataErr := json.Marshal(data)
 
-	if err != nil {
-		return
+	if dataErr != nil {
+		return nil, dataErr
 	}
 
 	reqBody := bytes.NewBuffer(reqData)
-	req, err := retry.NewRequest("POST", url, reqBody)
+	req, reqErr := retry.NewRequest("POST", url, reqBody)
 
-	if err != nil {
-		return
+	if reqErr != nil {
+		return nil, reqErr
 	}
 
-	res, err := h.doRequest(req)
+	res, httpErr := h.doRequest(req)
 
-	if err != nil {
-		return
+	if httpErr != nil {
+		return nil, httpErr
 	}
 
-	httpError := hasError(res.StatusCode)
+	statusErr := hasError(res.StatusCode)
 
-	resp, err = ioutil.ReadAll(res.Body)
+	resp, readErr := ioutil.ReadAll(res.Body)
 
-	if err != nil {
-		return
+	if readErr != nil {
+		return nil, readErr
 	}
 
-	if httpError != nil {
-		err = fmt.Errorf("failed to POST (%s) %s - %s", url, httpError, string(resp))
-		return
+	if statusErr != nil {
+		return nil, fmt.Errorf("failed to POST (%s) %s - %s", url, statusErr, string(resp))
 	}
 
-	return
+	return resp, nil
 }
 
 // postUnmarshalled makes a POST HTTP request and unmarshalls the data

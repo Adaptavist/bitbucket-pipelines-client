@@ -2,10 +2,9 @@ package client
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/adaptavist/bitbucket_pipelines_client/model"
 	http "github.com/hashicorp/go-retryablehttp"
+	"time"
 )
 
 type Client struct {
