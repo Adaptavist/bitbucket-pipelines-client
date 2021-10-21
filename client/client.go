@@ -58,7 +58,7 @@ func (h Client) RunPipeline(request model.PostPipelineRequest) (pipeline *model.
 		}
 
 		if pipeline.State.Result.HasError() {
-			panic(fmt.Sprintf("Pipeline finished with error %v", pipeline.State.Result.Error))
+			return nil, fmt.Errorf("pipeline finished with error %v", pipeline.State.Result.Error)
 		}
 	}
 
