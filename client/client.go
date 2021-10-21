@@ -45,6 +45,7 @@ func (h Client) RunPipeline(request model.PostPipelineRequest) (pipeline *model.
 		if pipeline.State.Result.OK() {
 			break
 		}
+
 		time.Sleep(time.Second * 5) // TODO
 		pipeline, err = h.GetPipeline(model.GetPipelineRequest{
 			Workspace:  request.Workspace,
@@ -54,6 +55,10 @@ func (h Client) RunPipeline(request model.PostPipelineRequest) (pipeline *model.
 
 		if err != nil {
 			return nil, err
+		}
+
+		if pipeline.State.Result.HasError() {
+			panic(fmt.Sprintf("Pipeline finished with error %v", pipeline.State.Result.Error))
 		}
 	}
 
